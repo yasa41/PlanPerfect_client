@@ -40,6 +40,11 @@ const inviteAPI = axios.create({
   withCredentials: true,
 });
 
+const photoAPI = axios.create({
+  baseURL: import.meta.env.VITE_API_PHOTO,
+  withCredentials: true,
+});
+
 authAPI.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -169,3 +174,27 @@ export const downloadInvitePdf = (inviteHtml) =>
 // Send invite emails to all guests
 export const sendInviteEmail = (eventId, subject, inviteHtml) => 
   inviteAPI.post('/send-emails', { eventId, subject, inviteHtml });
+
+// PHOTO APIs
+export const uploadPhotosAPI = (eventId, files) => {
+  const formData = new FormData();
+  formData.append('eventId', eventId);
+  files.forEach((file) => formData.append('photos', file));
+  
+  return photoAPI.post('/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+};
+
+// PHOTO APIs (UPDATE THESE 3)
+export const getEventPhotosAPI = (eventId) => 
+  photoAPI.get(`/event/${eventId}`);  // ← CHANGED
+
+export const deletePhotoAPI = (photoId) => 
+  photoAPI.delete(`/photo/${photoId}`);  // ← CHANGED
+
+// uploadPhotosAPI and sendPhotosToRsvpGuestsAPI stay the same
+
+
+export const sendPhotosToRsvpGuestsAPI = (eventId) => 
+  photoAPI.post('/send-to-rsvp', { eventId });

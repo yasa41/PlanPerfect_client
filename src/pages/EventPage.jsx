@@ -7,13 +7,21 @@ import Vendors from "../components/events/Vendors.jsx";
 import ToDoList from "../components/events/ToDoList.jsx";
 import Budget from "../components/events/Budget.jsx";
 import Invites from "../components/events/Invites.jsx";
+import Photos from "../components/events/Photos.jsx"; // ← NEW
 
 import { useEvents } from "../hooks/useEvent";
 
 // Load backend URL from .env
 const backendBaseURL = import.meta.env.VITE_API_URL;
 
-const tabs = ["Guest List", "Vendors", "ToDo List", "Budget", "Invites"];
+const tabs = [
+  "Guest List", 
+  "Vendors", 
+  "ToDo List", 
+  "Budget", 
+  "Invites", 
+  "Photos"  // ← NEW
+];
 
 export default function EventPage() {
   const { eventId } = useParams();
@@ -145,6 +153,8 @@ export default function EventPage() {
         {activeTab === "Budget" && <Budget eventId={eventId} />}
 
         {activeTab === "Invites" && <Invites eventId={eventId} />}
+
+        {activeTab === "Photos" && <Photos eventId={eventId} />} {/* ← NEW */}
       </div>
     </div>
   );

@@ -6,10 +6,12 @@ import LandingPage from "./pages/LandingPage";
 import EventPage from "./pages/EventPage";
 import InvitationGenerator from "./pages/GenerateInvite";
 import YourEventsPage from "./components/events/YourEvent";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
     <Routes>
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
        <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/login" element={<Login />} />
