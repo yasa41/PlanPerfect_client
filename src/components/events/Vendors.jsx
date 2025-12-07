@@ -48,7 +48,6 @@ export default function Vendors({ eventId }) {
       return;
     }
 
-    // Convert estimate to number; use 0 if conversion fails
     const estimateNum = Number(newVendor.estimate);
     if (isNaN(estimateNum)) {
       alert("Estimate must be a valid number");
@@ -81,16 +80,18 @@ export default function Vendors({ eventId }) {
 
   return (
     <>
-      <h3 className="text-2xl font-bold text-brown mb-6">Vendor Management</h3>
+      <h3 className="text-2xl sm:text-3xl font-bold text-brown mb-6">Vendor Management</h3>
 
       {/* ADD VENDOR FORM */}
-      <div className="mb-8 bg-white p-6 rounded-xl shadow">
-        <h4 className="text-lg font-semibold mb-4 text-brown">Add New Vendor</h4>
+      <div className="mb-8 bg-white p-4 sm:p-6 rounded-xl shadow">
+        <h4 className="text-lg font-semibold mb-4 text-brown">
+          Add New Vendor
+        </h4>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
             placeholder="Name"
-            className="border rounded p-2"
+            className="border rounded p-2 text-sm sm:text-base"
             value={newVendor.name}
             onChange={(e) =>
               setNewVendor({ ...newVendor, name: e.target.value })
@@ -98,7 +99,7 @@ export default function Vendors({ eventId }) {
           />
           <input
             placeholder="Email"
-            className="border rounded p-2"
+            className="border rounded p-2 text-sm sm:text-base"
             value={newVendor.email}
             onChange={(e) =>
               setNewVendor({ ...newVendor, email: e.target.value })
@@ -106,7 +107,7 @@ export default function Vendors({ eventId }) {
           />
           <input
             placeholder="Phone"
-            className="border rounded p-2"
+            className="border rounded p-2 text-sm sm:text-base"
             value={newVendor.phoneNo}
             onChange={(e) =>
               setNewVendor({ ...newVendor, phoneNo: e.target.value })
@@ -114,8 +115,8 @@ export default function Vendors({ eventId }) {
           />
           <input
             placeholder="Estimate"
-            className="border rounded p-2"
             type="number"
+            className="border rounded p-2 text-sm sm:text-base"
             value={newVendor.estimate}
             onChange={(e) =>
               setNewVendor({ ...newVendor, estimate: e.target.value })
@@ -123,7 +124,10 @@ export default function Vendors({ eventId }) {
           />
           <textarea
             placeholder="Details"
-            className="border rounded p-2 col-span-1 md:col-span-2"
+            className="
+              border rounded p-2 text-sm sm:text-base 
+              col-span-1 md:col-span-2
+            "
             value={newVendor.details}
             onChange={(e) =>
               setNewVendor({ ...newVendor, details: e.target.value })
@@ -133,28 +137,38 @@ export default function Vendors({ eventId }) {
 
         <button
           onClick={handleAddVendor}
-          className="mt-4 px-4 py-2 bg-brown text-white rounded-lg"
+          className="
+            mt-4 px-4 py-2 bg-brown text-white rounded-lg
+            text-sm sm:text-base
+          "
         >
           Add Vendor
         </button>
       </div>
 
       {/* VENDOR LIST */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         {vendors.map((vendor) => {
           const isSelected = selectedVendors.includes(vendor._id);
 
           return (
             <div
               key={vendor._id}
-              className={`rounded-xl p-6 shadow cursor-pointer transition border-2 ${
-                isSelected
-                  ? "border-brown bg-brown text-white"
-                  : "border-transparent bg-offwhite text-brown"
-              }`}
+              className={`
+                rounded-xl p-4 sm:p-6 shadow cursor-pointer transition border-2 
+                text-sm sm:text-base
+                ${
+                  isSelected
+                    ? "border-brown bg-brown text-white"
+                    : "border-transparent bg-offwhite text-brown"
+                }
+              `}
               onClick={() => handleSelect(vendor._id)}
             >
-              <span className="text-xl font-bold mb-2 block">{vendor.name}</span>
+              <span className="text-lg sm:text-xl font-bold mb-2 block">
+                {vendor.name}
+              </span>
+
               <span className="block">Email: {vendor.email || "N/A"}</span>
               <span className="block">Phone: {vendor.phoneNo || "N/A"}</span>
               <span className="block">
