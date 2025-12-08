@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.PlanPerfect",
+      "sha256_cert_fingerprints": [
+        "56:D9:5E:AD:92:AF:6B:10:C8:55:ED:98:95:DF:61:9B:38:92:3E:F0:D0:A5:B6:BA:B4:AD:00:A1:A2:5E:31:A8"
+      ]
+    }
+  }
+]
