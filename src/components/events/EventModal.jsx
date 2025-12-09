@@ -4,19 +4,33 @@ import { useEvents } from "../../hooks/useEvent";
 export default function EventModal({ eventType, onClose, onEventCreated }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState("");
+
+  // NEW: separate date and time
+  const [eventDate, setEventDate] = useState("");
+  const [eventTime, setEventTime] = useState("");
+
   const [venue, setVenue] = useState("");
   const { createNewEvent, loading, error } = useEvents();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!eventDate || !eventTime) {
+      alert("Please select both date and time.");
+      return;
+    }
+
+    // Combine into valid datetime string
+    const combinedDate = `${eventDate}T${eventTime}`;
+
     const payload = {
       title,
       description,
-      date,
+      date: combinedDate, // <-- ONLY THIS CHANGED
       venue,
-      eventType: eventType.name
+      eventType: eventType.name // DO NOT TOUCH THIS
     };
+
     const res = await createNewEvent(payload);
     if (res && res.success) onEventCreated();
   };
@@ -65,15 +79,27 @@ export default function EventModal({ eventType, onClose, onEventCreated }) {
           onChange={(e) => setDescription(e.target.value)}
         />
 
-        {/* Date */}
+        {/* EVENT DATE (Calendar Picker) */}
         <input
+          type="date"
           className="
             mb-4 w-full border px-3 py-2 sm:px-4 sm:py-2 
             rounded text-sm sm:text-base
           "
-          placeholder="Date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+          value={eventDate}
+          onChange={(e) => setEventDate(e.target.value)}
+          required
+        />
+
+        {/* EVENT TIME */}
+        <input
+          type="time"
+          className="
+            mb-4 w-full border px-3 py-2 sm:px-4 sm:py-2 
+            rounded text-sm sm:text-base
+          "
+          value={eventTime}
+          onChange={(e) => setEventTime(e.target.value)}
           required
         />
 

@@ -30,7 +30,16 @@ export default function GuestList({ eventId }) {
 
   const handleAddGuest = async (e) => {
     e.preventDefault();
-    if (!newGuest.name) return;
+
+    if (!/^[A-Za-z ]+$/.test(newGuest.name)) {
+      alert("Name must contain only letters and spaces.");
+      return;
+    }
+
+    if (newGuest.phoneNo.length !== 10) {
+      alert("Phone number must be exactly 10 digits.");
+      return;
+    }
 
     await addNewGuest(eventId, { ...newGuest });
     setShowAdd(false);
@@ -69,33 +78,53 @@ export default function GuestList({ eventId }) {
             <h4 className="font-semibold mb-4 text-brown text-lg">Add Guest</h4>
 
             <form onSubmit={handleAddGuest} className="flex flex-col gap-3">
+              
+              {/* STRICT NAME VALIDATION — only A–Z, a–z, spaces */}
               <input
                 type="text"
                 placeholder="Name"
                 required
+                pattern="^[A-Za-z ]+$"
+                title="Only letters and spaces are allowed"
                 className="border rounded px-3 py-2"
                 value={newGuest.name}
-                onChange={(e) =>
-                  setNewGuest({ ...newGuest, name: e.target.value })
-                }
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  // Live filtering: remove any invalid characters
+                  const cleaned = value.replace(/[^A-Za-z ]/g, "");
+
+                  setNewGuest({ ...newGuest, name: cleaned });
+                }}
               />
+
+              {/* Email (required) */}
               <input
                 type="email"
                 placeholder="Email"
+                required
                 className="border rounded px-3 py-2"
                 value={newGuest.email}
                 onChange={(e) =>
                   setNewGuest({ ...newGuest, email: e.target.value })
                 }
               />
+
+              {/* Phone — only digits + max 10 */}
               <input
                 type="tel"
-                placeholder="Phone"
+                placeholder="Phone (10 digits)"
+                maxLength={10}
+                pattern="^[0-9]{10}$"
+                title="Phone number must be exactly 10 digits"
                 className="border rounded px-3 py-2"
                 value={newGuest.phoneNo}
-                onChange={(e) =>
-                  setNewGuest({ ...newGuest, phoneNo: e.target.value })
-                }
+                onChange={(e) => {
+                  const digits = e.target.value.replace(/\D/g, "");
+                  if (digits.length <= 10) {
+                    setNewGuest({ ...newGuest, phoneNo: digits });
+                  }
+                }}
               />
 
               <div className="flex justify-end gap-2 mt-2">
@@ -122,7 +151,7 @@ export default function GuestList({ eventId }) {
       {loading && <div>Loading guests...</div>}
       {error && <div className="text-red-600">{error}</div>}
 
-      {/* Responsive Table Wrapper */}
+      {/* Responsive Table */}
       <div className="overflow-x-auto rounded-lg">
         <table className="w-full table-auto text-sm sm:text-base">
           <thead>
@@ -158,13 +187,8 @@ export default function GuestList({ eventId }) {
                   </select>
                 </td>
 
-                <td className="py-4 px-2 sm:px-3">
-                  {guest.email || "-"}
-                </td>
-
-                <td className="py-4 px-2 sm:px-3">
-                  {guest.phoneNo || "-"}
-                </td>
+                <td className="py-4 px-2 sm:px-3">{guest.email || "-"}</td>
+                <td className="py-4 px-2 sm:px-3">{guest.phoneNo || "-"}</td>
               </tr>
             ))}
           </tbody>
