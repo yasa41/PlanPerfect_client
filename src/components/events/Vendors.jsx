@@ -169,7 +169,7 @@ export default function Vendors({ eventId }) {
                 {vendor.name}
               </span>
 
-              <span className="block">Email: {vendor.email || "N/A"}</span>
+              
               <span className="block">Phone: {vendor.phoneNo || "N/A"}</span>
               <span className="block">
                 Estimate:{" "}
