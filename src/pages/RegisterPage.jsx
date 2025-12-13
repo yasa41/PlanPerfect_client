@@ -1,10 +1,21 @@
 import React from "react";
-import bgImage from '/bg4.avif';
+import bgImage from "/bg4.avif";
 import { useRegister } from "../hooks/useRegister";
 import { Link } from "react-router-dom";
 
 export default function SignIn() {
-  const { name, setName, email, setEmail, password, setPassword, error, handleSubmit } = useRegister();
+  const {
+    name,
+    setName,
+    email,
+    setEmail,
+    phone,
+    setPhone,
+    password,
+    setPassword,
+    error,
+    handleSubmit,
+  } = useRegister();
 
   return (
     <div
@@ -12,7 +23,7 @@ export default function SignIn() {
       style={{
         backgroundImage: `url(${bgImage})`,
         backgroundSize: "cover",
-        backgroundPosition: "center"
+        backgroundPosition: "center",
       }}
     >
       {/* Blur overlay */}
@@ -35,10 +46,13 @@ export default function SignIn() {
             items-center lg:items-start text-center lg:text-left
           "
         >
-          <div className="text-3xl sm:text-4xl font-bold mb-5 text-gold">EVENTS</div>
+          <div className="text-3xl sm:text-4xl font-bold mb-5 text-gold">
+            EVENTS
+          </div>
 
           <div className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-none mb-7 text-brown">
-            PLAN PERFECT<br />
+            PLAN PERFECT
+            <br />
             <span className="text-gold">MOMENTS</span>
           </div>
 
@@ -47,7 +61,8 @@ export default function SignIn() {
           </div>
 
           <div className="text-base sm:text-lg text-taupe">
-            From birthdays to corporate gatherings — create unforgettable memories, effortlessly.
+            From birthdays to corporate gatherings — create unforgettable
+            memories, effortlessly.
           </div>
         </div>
 
@@ -61,7 +76,9 @@ export default function SignIn() {
           "
         >
           <form className="w-full max-w-[400px]" onSubmit={handleSubmit}>
-            <label className="font-semibold mb-2 block text-taupe">Username</label>
+            <label className="font-semibold mb-2 block text-taupe">
+              Username
+            </label>
             <input
               type="text"
               placeholder="Enter your username"
@@ -81,7 +98,26 @@ export default function SignIn() {
               onChange={(e) => setEmail(e.target.value)}
             />
 
-            <label className="font-semibold mb-2 block text-taupe">Password</label>
+            {/* ✅ PHONE FIELD */}
+            <label className="font-semibold mb-2 block text-taupe">
+              Phone Number
+            </label>
+            <input
+              type="tel"
+              placeholder="Enter 10-digit phone number"
+              required
+              maxLength={10}
+              pattern="[0-9]{10}"
+              className="w-full p-4 mb-5 rounded-[10px] border border-taupe outline-none text-lg bg-offwhite text-brown"
+              value={phone}
+              onChange={(e) =>
+                setPhone(e.target.value.replace(/\D/g, ""))
+              }
+            />
+
+            <label className="font-semibold mb-2 block text-taupe">
+              Password
+            </label>
             <input
               type="password"
               placeholder="************"
@@ -93,12 +129,6 @@ export default function SignIn() {
 
             {error && <p className="text-red-500 mb-5">{error}</p>}
 
-            <div className="text-left mb-5">
-              <Link to="/forgot-password" className="text-gold text-base hover:underline">
-                Forgot password?
-              </Link>
-            </div>
-
             <button
               type="submit"
               className="w-full py-4 bg-brown text-offwhite font-bold text-xl rounded-[10px] cursor-pointer mb-6 hover:bg-taupe transition"
@@ -108,7 +138,10 @@ export default function SignIn() {
 
             <div className="text-center text-base text-taupe">
               Already have an account?{" "}
-              <Link to="/login" className="text-gold underline hover:text-brown">
+              <Link
+                to="/login"
+                className="text-gold underline hover:text-brown"
+              >
                 Log in
               </Link>
             </div>

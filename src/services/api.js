@@ -58,12 +58,12 @@ authAPI.interceptors.response.use(
 );
 
 // AUTH APIs
-export const registerUser = (name, email, password) => {
-  return authAPI.post("/register", { name, email, password });
+export const registerUser = (name, email, password, phone) => {
+  return authAPI.post("/register", { name, email, password, phone });
 };
 
-export const loginUser = (email, password) => {
-  return authAPI.post("/login", { email, password });
+export const loginUser = (data) => {
+  return authAPI.post("/login",  data);
 };
 
 export const logoutUser = () => authAPI.post("/logout");
@@ -198,3 +198,21 @@ export const deletePhotoAPI = (photoId) =>
 
 export const sendPhotosToRsvpGuestsAPI = (eventId) => 
   photoAPI.post('/send-to-rsvp', { eventId });
+
+
+// ================= PHONE OTP AUTH APIs =================
+
+// Request OTP via phone (Forgot password)
+export const requestPasswordResetByPhone = (phone) => {
+  return authAPI.post("/forgot-password-phone", { phone });
+};
+
+// Verify phone OTP
+export const verifyPhoneOtp = (phone, otp) => {
+  return authAPI.post("/verify-phone-otp", { phone, otp });
+};
+
+// Reset password using phone
+export const resetPasswordByPhone = (phone, newPassword) => {
+  return authAPI.post("/reset-password-phone", { phone, newPassword });
+};
