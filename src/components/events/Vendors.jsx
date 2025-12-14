@@ -2,11 +2,11 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useVendors } from "../../hooks/useVendor.js";
 
 const CATEGORY_LABELS = {
-  catering: "Catering",
-  venue: "Venue",
-  photography: "Photography",
-  decoration: "Decoration",
-  others: "Others",
+  catering: "catering",
+  venue: "venue",
+  photography: "photography",
+  decoration: "decoration",
+  others: "others",
 };
 
 export default function Vendors({ eventId }) {
