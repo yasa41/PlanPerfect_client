@@ -63,7 +63,7 @@ export const registerUser = (name, email, password, phone) => {
 };
 
 export const loginUser = (data) => {
-  return authAPI.post("/login",  data);
+  return authAPI.post("/login", data);
 };
 
 export const logoutUser = () => authAPI.post("/logout");
@@ -146,8 +146,13 @@ export const updateTaskInEvent = (eventId, taskId, updates = {}) =>
 export const fetchVendorsByEvent = (eventId) =>
   vendorAPI.get(`/${eventId}`);
 
-export const addVendorToEvent = (eventId, name, email, phoneNo, estimate, details) =>
-  vendorAPI.post("/add", { eventId, name, email, phoneNo, estimate, details });
+export const addVendorToEvent = (
+  eventId, name, email, phoneNo, estimate, category, details, imageUrl, websiteUrl
+) =>
+  axios.post("add", {
+    eventId, name, email, phoneNo, estimate, category, details, imageUrl, websiteUrl
+  });
+
 
 export const updateVendorDetails = (vendorId, updates = {}) =>
   vendorAPI.post("/update", { vendorId, ...updates });
@@ -158,21 +163,21 @@ export const deleteVendorById = (vendorId) =>
 
 // INVITE APIs
 
-export const getInviteTemplate = (eventId) => 
+export const getInviteTemplate = (eventId) =>
   inviteAPI.get(`/template/${eventId}`);
 
 // Generate AI invite text from event details
-export const generateInviteText = (eventId) => 
+export const generateInviteText = (eventId) =>
   inviteAPI.post('/generate-text', { eventId });
 
 // Download invite PDF from HTML
-export const downloadInvitePdf = (inviteHtml) => 
+export const downloadInvitePdf = (inviteHtml) =>
   inviteAPI.post('/download-pdf', { inviteHtml }, {
     responseType: 'blob'
   });
 
 // Send invite emails to all guests
-export const sendInviteEmail = (eventId, subject, inviteHtml) => 
+export const sendInviteEmail = (eventId, subject, inviteHtml) =>
   inviteAPI.post('/send-emails', { eventId, subject, inviteHtml });
 
 // PHOTO APIs
@@ -180,23 +185,23 @@ export const uploadPhotosAPI = (eventId, files) => {
   const formData = new FormData();
   formData.append('eventId', eventId);
   files.forEach((file) => formData.append('photos', file));
-  
+
   return photoAPI.post('/upload', formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   });
 };
 
 // PHOTO APIs (UPDATE THESE 3)
-export const getEventPhotosAPI = (eventId) => 
+export const getEventPhotosAPI = (eventId) =>
   photoAPI.get(`/event/${eventId}`);  // ← CHANGED
 
-export const deletePhotoAPI = (photoId) => 
+export const deletePhotoAPI = (photoId) =>
   photoAPI.delete(`/photo/${photoId}`);  // ← CHANGED
 
 // uploadPhotosAPI and sendPhotosToRsvpGuestsAPI stay the same
 
 
-export const sendPhotosToRsvpGuestsAPI = (eventId) => 
+export const sendPhotosToRsvpGuestsAPI = (eventId) =>
   photoAPI.post('/send-to-rsvp', { eventId });
 
 

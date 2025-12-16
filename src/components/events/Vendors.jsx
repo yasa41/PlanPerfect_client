@@ -1,23 +1,18 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { useVendors } from "../../hooks/useVendor.js";
+import React, { useEffect, useMemo, useState } from "react";
+import { Trash2, ArrowUpRight } from "lucide-react";
+import { useVendors } from "../../hooks/useVendor";
 
 const CATEGORY_LABELS = {
-  catering: "catering",
-  venue: "venue",
-  photography: "photography",
-  decoration: "decoration",
-  others: "others",
+  catering: "Catering",
+  venue: "Venue",
+  photography: "Photography",
+  decoration: "Decoration",
+  others: "Others",
 };
 
 export default function Vendors({ eventId }) {
-  const {
-    vendors,
-    loading,
-    error,
-    fetchVendors,
-    addVendor,
-    deleteVendor,
-  } = useVendors();
+  const { vendors, loading, error, fetchVendors, addVendor, deleteVendor } =
+    useVendors();
 
   const [selectedVendors, setSelectedVendors] = useState(() => {
     const saved = localStorage.getItem("selectedVendors");
@@ -31,9 +26,10 @@ export default function Vendors({ eventId }) {
     estimate: "",
     category: "catering",
     details: "",
+    imageUrl: "",
+    websiteUrl: "",
   });
 
-  /* ===================== FETCH ===================== */
   useEffect(() => {
     if (eventId) fetchVendors(eventId);
   }, [eventId]);
@@ -42,17 +38,15 @@ export default function Vendors({ eventId }) {
     localStorage.setItem("selectedVendors", JSON.stringify(selectedVendors));
   }, [selectedVendors]);
 
-  /* ===================== GROUP BY CATEGORY ===================== */
   const groupedVendors = useMemo(() => {
     return vendors.reduce((acc, vendor) => {
-      const category = vendor.category || "others";
-      if (!acc[category]) acc[category] = [];
-      acc[category].push(vendor);
+      const cat = vendor.category || "others";
+      acc[cat] = acc[cat] || [];
+      acc[cat].push(vendor);
       return acc;
     }, {});
   }, [vendors]);
 
-  /* ===================== HANDLERS ===================== */
   const handleSelect = (id) => {
     setSelectedVendors((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
@@ -60,171 +54,161 @@ export default function Vendors({ eventId }) {
   };
 
   const handleAddVendor = async () => {
-    if (!newVendor.name.trim()) return alert("Name is required");
-    if (!newVendor.estimate) return alert("Estimate is required");
+    if (!newVendor.name || !newVendor.estimate) return;
 
-    const estimateNum = Number(newVendor.estimate);
-    if (isNaN(estimateNum)) return alert("Estimate must be a number");
+    await addVendor(
+      eventId,
+      newVendor.name,
+      newVendor.email,
+      newVendor.phoneNo,
+      Number(newVendor.estimate),
+      newVendor.category,
+      newVendor.details,
+      newVendor.imageUrl,
+      newVendor.websiteUrl
+    );
 
-    try {
-      await addVendor(
-        eventId,
-        newVendor.name,
-        newVendor.email,
-        newVendor.phoneNo,
-        estimateNum,
-        newVendor.category,
-        newVendor.details
-      );
-
-      setNewVendor({
-        name: "",
-        email: "",
-        phoneNo: "",
-        estimate: "",
-        category: "catering",
-        details: "",
-      });
-    } catch {
-      alert("Failed to add vendor");
-    }
+    setNewVendor({
+      name: "",
+      email: "",
+      phoneNo: "",
+      estimate: "",
+      category: "catering",
+      details: "",
+      imageUrl: "",
+      websiteUrl: "",
+    });
   };
 
-  /* ===================== UI ===================== */
   if (loading) return <div>Loading vendors...</div>;
   if (error) return <div className="text-red-600">{error}</div>;
 
   return (
     <>
-      <h3 className="text-2xl sm:text-3xl font-bold text-brown mb-6">
-        Vendor Management
-      </h3>
+      <h3 className="text-3xl font-bold mb-6">Vendor Management</h3>
 
-      {/* ================= ADD VENDOR ================= */}
-      <div className="mb-8 bg-white p-4 sm:p-6 rounded-xl shadow">
-        <h4 className="text-lg font-semibold mb-4 text-brown">
-          Add New Vendor
-        </h4>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* ADD VENDOR */}
+      <div className="bg-white p-6 rounded-xl shadow mb-10 grid gap-4 md:grid-cols-2">
+        {[
+          ["Name", "name"],
+          ["Email", "email"],
+          ["Phone", "phoneNo"],
+          ["Estimate", "estimate"],
+          ["Image URL", "imageUrl"],
+          ["Website URL", "websiteUrl"],
+        ].map(([label, key]) => (
           <input
-            placeholder="Name"
-            className="border rounded p-2"
-            value={newVendor.name}
+            key={key}
+            placeholder={label}
+            className="border p-2 rounded"
+            value={newVendor[key]}
             onChange={(e) =>
-              setNewVendor({ ...newVendor, name: e.target.value })
+              setNewVendor({ ...newVendor, [key]: e.target.value })
             }
           />
+        ))}
 
-          <input
-            placeholder="Email"
-            className="border rounded p-2"
-            value={newVendor.email}
-            onChange={(e) =>
-              setNewVendor({ ...newVendor, email: e.target.value })
-            }
-          />
+        <select
+          className="border p-2 rounded"
+          value={newVendor.category}
+          onChange={(e) =>
+            setNewVendor({ ...newVendor, category: e.target.value })
+          }
+        >
+          {Object.keys(CATEGORY_LABELS).map((c) => (
+            <option key={c} value={c}>
+              {CATEGORY_LABELS[c]}
+            </option>
+          ))}
+        </select>
 
-          <input
-            placeholder="Phone"
-            className="border rounded p-2"
-            value={newVendor.phoneNo}
-            onChange={(e) =>
-              setNewVendor({ ...newVendor, phoneNo: e.target.value })
-            }
-          />
-
-          <input
-            placeholder="Estimate"
-            type="number"
-            className="border rounded p-2"
-            value={newVendor.estimate}
-            onChange={(e) =>
-              setNewVendor({ ...newVendor, estimate: e.target.value })
-            }
-          />
-
-          {/* CATEGORY SELECT */}
-          <select
-            className="border rounded p-2"
-            value={newVendor.category}
-            onChange={(e) =>
-              setNewVendor({ ...newVendor, category: e.target.value })
-            }
-          >
-            <option value="catering">Catering</option>
-            <option value="venue">Venue</option>
-            <option value="photography">Photography</option>
-            <option value="decoration">Decoration</option>
-            <option value="others">Others</option>
-          </select>
-
-          <textarea
-            placeholder="Additional details"
-            className="border rounded p-2 md:col-span-2"
-            value={newVendor.details}
-            onChange={(e) =>
-              setNewVendor({ ...newVendor, details: e.target.value })
-            }
-          />
-        </div>
+        <textarea
+          placeholder="Description"
+          className="border p-2 rounded md:col-span-2"
+          value={newVendor.details}
+          onChange={(e) =>
+            setNewVendor({ ...newVendor, details: e.target.value })
+          }
+        />
 
         <button
           onClick={handleAddVendor}
-          className="mt-4 px-4 py-2 bg-brown text-white rounded-lg"
+          className="bg-brown text-white px-4 py-2 rounded"
         >
           Add Vendor
         </button>
       </div>
 
-      {/* ================= GROUPED VENDORS ================= */}
-      {Object.entries(groupedVendors).map(([category, vendorList]) => (
-        <div key={category} className="mb-10">
-          <h4 className="text-xl sm:text-2xl font-bold text-brown mb-4">
-            {CATEGORY_LABELS[category] || "Others"}
+      {/* VENDOR CARDS */}
+      {Object.entries(groupedVendors).map(([category, list]) => (
+        <div key={category} className="mb-12">
+          <h4 className="text-2xl font-semibold mb-4">
+            {CATEGORY_LABELS[category]}
           </h4>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {vendorList.map((vendor) => {
-              const isSelected = selectedVendors.includes(vendor._id);
+            {list.map((vendor) => {
+              const selected = selectedVendors.includes(vendor._id);
 
               return (
                 <div
                   key={vendor._id}
-                  className={`
-                    rounded-xl p-4 sm:p-6 shadow cursor-pointer transition border-2
-                    ${
-                      isSelected
-                        ? "border-brown bg-brown text-white"
-                        : "border-transparent bg-offwhite text-brown"
-                    }
-                  `}
                   onClick={() => handleSelect(vendor._id)}
+                  className={`rounded-2xl overflow-hidden cursor-pointer transition border
+                  ${
+                    selected
+                      ? "border-brown bg-brown text-white"
+                      : "bg-white"
+                  }`}
                 >
-                  <span className="text-lg sm:text-xl font-bold block mb-2">
-                    {vendor.name}
-                  </span>
+                  {vendor.imageUrl && (
+                    <img
+                      src={vendor.imageUrl|| "/bg2.jpg"}
+                      alt={vendor.name}
+                      className="h-45 w-full object-cover"
+                    />
+                  )}
 
-                  <span className="block">
-                    Phone: {vendor.phoneNo || "N/A"}
-                  </span>
+                  <div className="p-5 space-y-2">
+                    <h5 className="text-xl font-bold">{vendor.name}</h5>
 
-                  <span className="block">
-                    Estimate: ₹{vendor.estimate}
-                  </span>
+                    <p className="text-sm opacity-80">
+                      {vendor.details || "No description provided"}
+                    </p>
 
-                  <button
-                    className="text-sm text-red-600 font-semibold mt-3"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteVendor(vendor._id);
-                      setSelectedVendors((prev) =>
-                        prev.filter((id) => id !== vendor._id)
-                      );
-                    }}
-                  >
-                    Delete Vendor
-                  </button>
+                    <p className="text-sm">📞 {vendor.phoneNo || "N/A"}</p>
+
+                    <div className="flex items-center justify-between pt-3">
+                      <span className="text-xl font-bold">
+                        ₹{vendor.estimate}
+                      </span>
+
+                      {vendor.websiteUrl && (
+                        <a
+                          href={vendor.websiteUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
+                        >
+                          Open Website <ArrowUpRight size={16} />
+                        </a>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteVendor(vendor._id);
+                        setSelectedVendors((prev) =>
+                          prev.filter((id) => id !== vendor._id)
+                        );
+                      }}
+                      className="flex items-center gap-2 text-red-600 text-sm mt-3"
+                    >
+                      <Trash2 size={16} /> Delete
+                    </button>
+                  </div>
                 </div>
               );
             })}
