@@ -161,13 +161,14 @@ export default function Vendors({ eventId }) {
                       : "bg-white"
                   }`}
                 >
-                  {vendor.imageUrl && (
+                  {/* FIXED IMAGE */}
+                  <div className="w-full h-96 overflow-hidden bg-gray-100">
                     <img
-                      src={vendor.imageUrl|| "/bg2.jpg"}
+                      src={vendor.imageUrl || "/bg2.jpg"}
                       alt={vendor.name}
-                      className="h-45 w-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                     />
-                  )}
+                  </div>
 
                   <div className="p-5 space-y-2">
                     <h5 className="text-xl font-bold">{vendor.name}</h5>
