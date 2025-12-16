@@ -96,8 +96,8 @@ export const createEvent = (data) => {
 
 // GUEST APIs
 
-export const fetchGuestsByEvent = (eventId) =>
-  guestAPI.get(`/${eventId}`);
+export const fetchGuestsByEvent = (eventId, q = '') =>
+  guestAPI.get(`/${eventId}${q ? `?q=${encodeURIComponent(q)}` : ''}`);
 
 // Add guest to event
 export const addGuest = (eventId, guestData) =>
@@ -110,6 +110,11 @@ export const updateRsvp = (guestId, rsvpStatus) =>
 // RSVP via link (GET, for direct email links)
 export const rsvpViaLink = (guestId, action) =>
   guestAPI.get(`/rsvp/${guestId}/${action}`);
+
+// --- NEW: Delete a guest ---
+export const deleteGuest = (guestId) =>
+  guestAPI.delete(`/guest/${guestId}`);
+
 
 // Budget API
 
