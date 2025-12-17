@@ -149,21 +149,48 @@ export const updateTaskInEvent = (eventId, taskId, updates = {}) =>
 // ------Vendor API----------
 
 export const fetchVendorsByEvent = (eventId) =>
-  vendorAPI.get(`/${eventId}`);
+  vendorAPI.get(`/event/${eventId}`);
 
 export const addVendorToEvent = (
-  eventId, name, email, phoneNo, estimate, category, details, imageUrl, websiteUrl
+  eventId,
+  name,
+  email,
+  phoneNo,
+  estimate,
+  category,
+  details,
+  imageUrl,
+  websiteUrl
 ) =>
-  axios.post("add", {
-    eventId, name, email, phoneNo, estimate, category, details, imageUrl, websiteUrl
+  vendorAPI.post("/add", {
+    eventId,
+    name,
+    email,
+    phoneNo,
+    estimate,
+    category,
+    details,
+    imageUrl,
+    websiteUrl,
   });
 
-
-export const updateVendorDetails = (vendorId, updates = {}) =>
-  vendorAPI.post("/update", { vendorId, ...updates });
+export const updateVendorDetails = (vendorId, isHired) =>
+  vendorAPI.post("/update", { vendorId, isHired });
 
 export const deleteVendorById = (vendorId) =>
   vendorAPI.post("/delete", { vendorId });
+
+// ==============================
+// SEND VENDOR EMAIL
+// ==============================
+
+export const sendVendorEmail = (vendorId, subject, body) =>
+  vendorAPI.post("/send-email", {
+    vendorId,
+    subject,
+    body,
+  });
+
 
 
 // INVITE APIs

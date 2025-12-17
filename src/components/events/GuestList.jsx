@@ -52,7 +52,7 @@ export default function GuestList({ eventId }) {
     return;
   }
 
-  // 🔑 ADD THIS — Email validation
+  //  ADD THIS — Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   if (!emailRegex.test(newGuest.email)) {
     alert("Please enter a valid email address.");
