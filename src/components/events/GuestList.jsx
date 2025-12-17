@@ -33,43 +33,33 @@ export default function GuestList({ eventId }) {
     phoneNo: "",
   });
 
-  // ----------------------------------
-  // Initial Fetch
-  // ----------------------------------
   useEffect(() => {
     if (eventId) fetchGuests(eventId);
   }, [eventId]);
 
-  // ----------------------------------
-  // Handlers
-  // ----------------------------------
- const handleAddGuest = async (e) => {
-  e.preventDefault();
+  const handleAddGuest = async (e) => {
+    e.preventDefault();
 
-  // Name validation
-  if (!/^[A-Za-z ]+$/.test(newGuest.name)) {
-    alert("Name must contain only letters and spaces.");
-    return;
-  }
+    if (!/^[A-Za-z ]+$/.test(newGuest.name)) {
+      alert("Name must contain only letters and spaces.");
+      return;
+    }
 
-  //  ADD THIS — Email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-  if (!emailRegex.test(newGuest.email)) {
-    alert("Please enter a valid email address.");
-    return;
-  }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(newGuest.email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
 
-  // Phone validation
-  if (newGuest.phoneNo.length !== 10) {
-    alert("Phone number must be exactly 10 digits.");
-    return;
-  }
+    if (newGuest.phoneNo.length !== 10) {
+      alert("Phone number must be exactly 10 digits.");
+      return;
+    }
 
-  await addNewGuest(eventId, newGuest);
-  setShowAdd(false);
-  setNewGuest({ name: "", email: "", phoneNo: "" });
-};
-
+    await addNewGuest(eventId, newGuest);
+    setShowAdd(false);
+    setNewGuest({ name: "", email: "", phoneNo: "" });
+  };
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -111,20 +101,15 @@ export default function GuestList({ eventId }) {
     URL.revokeObjectURL(url);
   };
 
-  // ----------------------------------
-  // Render
-  // ----------------------------------
   return (
     <>
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6">
-        <h3 className="text-3xl font-bold text-brown">
-          Guest Management
-        </h3>
+        <h3 className="text-3xl font-bold text-brown">Guest Management</h3>
 
-        <div className="flex flex-col sm:flex-row gap-2">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           {/* Search */}
-          <div className="relative">
+          <div className="relative flex-1 sm:flex-none">
             <Search
               size={18}
               className="absolute left-3 top-2.5 text-taupe"
@@ -134,27 +119,14 @@ export default function GuestList({ eventId }) {
               placeholder="Search guests..."
               value={searchTerm}
               onChange={handleSearchChange}
-              className="
-                pl-10 pr-4 py-2
-                rounded-lg
-                border border-taupe/40
-                bg-offwhite
-                focus:outline-none focus:ring-2 focus:ring-gold/40
-              "
+              className="pl-10 pr-4 py-2 w-full rounded-lg border border-taupe/40 bg-offwhite focus:outline-none focus:ring-2 focus:ring-gold/40"
             />
           </div>
 
           {/* Export */}
           <button
             onClick={exportToCsv}
-            className="
-              flex items-center gap-2
-              px-4 py-2 rounded-lg
-              border border-gold/40
-              text-brown font-semibold
-              hover:bg-gold/20
-              transition
-            "
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-gold/40 text-brown font-semibold hover:bg-gold/20 transition w-full sm:w-auto"
           >
             <Download size={18} />
             Export
@@ -163,13 +135,7 @@ export default function GuestList({ eventId }) {
           {/* Add */}
           <button
             onClick={() => setShowAdd(true)}
-            className="
-              flex items-center gap-2
-              px-5 py-2 rounded-lg
-              bg-gold text-brown font-bold
-              hover:bg-brown hover:text-offwhite
-              transition
-            "
+            className="flex items-center justify-center gap-2 px-5 py-2 rounded-lg bg-gold text-brown font-bold hover:bg-brown hover:text-offwhite transition w-full sm:w-auto"
           >
             <Plus size={18} />
             Add Guest
@@ -179,11 +145,9 @@ export default function GuestList({ eventId }) {
 
       {/* Add Guest Modal */}
       {showAdd && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30">
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 p-4">
           <div className="bg-white rounded-xl w-full max-w-sm p-6">
-            <h4 className="text-xl font-bold text-brown mb-4">
-              Add Guest
-            </h4>
+            <h4 className="text-xl font-bold text-brown mb-4">Add Guest</h4>
 
             <form onSubmit={handleAddGuest} className="space-y-3">
               <input
@@ -226,23 +190,18 @@ export default function GuestList({ eventId }) {
                 className="w-full px-3 py-2 border rounded-lg"
               />
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowAdd(false)}
-                  className="px-4 py-2 bg-taupe text-white rounded-lg"
+                  className="px-4 py-2 bg-taupe text-white rounded-lg w-full sm:w-auto"
                 >
                   Cancel
                 </button>
 
                 <button
                   type="submit"
-                  className="
-                    px-4 py-2 rounded-lg
-                    bg-gold text-brown font-bold
-                    hover:bg-brown hover:text-offwhite
-                    transition
-                  "
+                  className="px-4 py-2 rounded-lg bg-gold text-brown font-bold hover:bg-brown hover:text-offwhite transition w-full sm:w-auto"
                 >
                   Add Guest
                 </button>
@@ -258,7 +217,7 @@ export default function GuestList({ eventId }) {
 
       {/* Table */}
       <div className="overflow-x-auto rounded-lg">
-        <table className="w-full text-sm sm:text-base">
+        <table className="w-full text-sm sm:text-base min-w-[600px]">
           <thead>
             <tr className="text-taupe bg-offwhite">
               <th className="px-3 py-3 text-left">Name</th>
@@ -304,13 +263,7 @@ export default function GuestList({ eventId }) {
                 <td className="px-3 py-4 text-center">
                   <button
                     onClick={() => handleDeleteGuest(guest._id)}
-                    className="
-                      text-red-400
-                      hover:text-red-600
-                      p-1 rounded
-                      hover:bg-red-100
-                      transition
-                    "
+                    className="text-red-400 hover:text-red-600 p-1 rounded hover:bg-red-100 transition"
                     title="Delete guest"
                   >
                     <Trash2 size={18} />
