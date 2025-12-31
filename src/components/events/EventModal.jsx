@@ -70,6 +70,7 @@ export default function EventModal({ eventType, onClose, onEventCreated }) {
           className="mb-4 w-full border px-3 py-2 rounded"
           placeholder="Title"
           value={title}
+           maxLength={50}
           onChange={(e) =>
             setTitle(blockLeadingNumbers(e.target.value))
           }
