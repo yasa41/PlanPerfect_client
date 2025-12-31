@@ -80,6 +80,7 @@ export default function EventModal({ eventType, onClose, onEventCreated }) {
         <input
           className="mb-4 w-full border px-3 py-2 rounded"
           placeholder="Description"
+           maxLength={100}
           value={description}
           onChange={(e) =>
             setDescription(blockLeadingNumbers(e.target.value))
