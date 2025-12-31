@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { useEvents } from "../../hooks/useEvent";
 
+/**
+ * Prevent numbers at the beginning of a string
+ */
+const blockLeadingNumbers = (value) => {
+  return value.replace(/^\d+/, "");
+};
+
 export default function EventModal({ eventType, onClose, onEventCreated }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -10,10 +17,10 @@ export default function EventModal({ eventType, onClose, onEventCreated }) {
 
   const { createNewEvent, loading, error } = useEvents();
 
-  //  TODAY (recomputed safely)
+  // TODAY
   const today = new Date().toISOString().split("T")[0];
 
-  // CURRENT TIME (always fresh)
+  // CURRENT TIME
   const getCurrentTime = () => {
     const now = new Date();
     return now.toTimeString().slice(0, 5);
@@ -30,7 +37,7 @@ export default function EventModal({ eventType, onClose, onEventCreated }) {
     const selectedDateTime = new Date(`${eventDate}T${eventTime}`);
     const now = new Date();
 
-    // FINAL HARD BLOCK
+    // HARD BLOCK past datetime
     if (selectedDateTime <= now) {
       alert("Event date and time must be in the future.");
       return;
@@ -58,19 +65,25 @@ export default function EventModal({ eventType, onClose, onEventCreated }) {
           Create {eventType.name} Event
         </h2>
 
+        {/* TITLE */}
         <input
           className="mb-4 w-full border px-3 py-2 rounded"
           placeholder="Title"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) =>
+            setTitle(blockLeadingNumbers(e.target.value))
+          }
           required
         />
 
+        {/* DESCRIPTION */}
         <input
           className="mb-4 w-full border px-3 py-2 rounded"
           placeholder="Description"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={(e) =>
+            setDescription(blockLeadingNumbers(e.target.value))
+          }
         />
 
         {/* DATE */}
@@ -95,7 +108,6 @@ export default function EventModal({ eventType, onClose, onEventCreated }) {
           onChange={(e) => {
             const selectedTime = e.target.value;
 
-            // HARD BLOCK past time today
             if (eventDate === today && selectedTime < getCurrentTime()) {
               alert("Please select a future time.");
               return;
@@ -106,9 +118,10 @@ export default function EventModal({ eventType, onClose, onEventCreated }) {
           required
         />
 
+        {/* VENUE */}
         <input
           className="mb-4 w-full border px-3 py-2 rounded"
-          placeholder="Place/Venue"
+          placeholder="Place / Venue"
           value={venue}
           onChange={(e) => setVenue(e.target.value)}
           required

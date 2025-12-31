@@ -76,8 +76,7 @@ export default function GuestList({ eventId }) {
   const exportToCsv = () => {
     if (!guests.length) return alert("No guests to export");
 
-    const escapeCSV = (v) =>
-      `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const escapeCSV = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
 
     const csv = [
       ["Name", "Email", "Phone", "RSVP Status"],
@@ -110,10 +109,7 @@ export default function GuestList({ eventId }) {
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           {/* Search */}
           <div className="relative flex-1 sm:flex-none">
-            <Search
-              size={18}
-              className="absolute left-3 top-2.5 text-taupe"
-            />
+            <Search size={18} className="absolute left-3 top-2.5 text-taupe" />
             <input
               type="text"
               placeholder="Search guests..."
@@ -154,6 +150,7 @@ export default function GuestList({ eventId }) {
                 type="text"
                 placeholder="Name"
                 required
+                maxLength={50}
                 value={newGuest.name}
                 onChange={(e) =>
                   setNewGuest({
@@ -244,10 +241,10 @@ export default function GuestList({ eventId }) {
                 <td className="px-3 py-4">
                   <select
                     value={guest.rsvpStatus}
-                    onChange={(e) =>
-                      updateGuestRsvp(guest._id, e.target.value)
-                    }
-                    className={`px-3 py-2 rounded-lg font-semibold ${statusColors[guest.rsvpStatus]}`}
+                    onChange={(e) => updateGuestRsvp(guest._id, e.target.value)}
+                    className={`px-3 py-2 rounded-lg font-semibold ${
+                      statusColors[guest.rsvpStatus]
+                    }`}
                   >
                     {RSVP_OPTIONS.map((opt) => (
                       <option key={opt.value} value={opt.value}>
